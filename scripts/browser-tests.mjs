@@ -1,0 +1,12 @@
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+const require = createRequire(import.meta.url);
+const cli = path.join(path.dirname(require.resolve('@playwright/test/package.json')), 'cli.js');
+const args = process.argv.includes('--install') ? ['install', 'chromium', '--only-shell'] : ['test', ...process.argv.slice(2)];
+const edge = process.platform === 'win32' && ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe'].some(file => existsSync(file));
+const child = spawn(process.execPath, [cli, ...args], { cwd: process.cwd(), stdio: 'inherit', shell: false, env: { ...process.env, ...(edge && !process.env.HYPER_LEADER_TEST_BROWSER_CHANNEL ? { HYPER_LEADER_TEST_BROWSER_CHANNEL: 'msedge' } : {}), PLAYWRIGHT_BROWSERS_PATH: process.env.PLAYWRIGHT_BROWSERS_PATH ?? path.join(process.cwd(), '.local', 'browsers') } });
+child.on('error', error => { console.error(error.message); process.exitCode = 1; });
+child.on('exit', code => process.exit(code ?? 1));
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => child.kill(signal));

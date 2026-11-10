@@ -1,0 +1,2 @@
+import { defineConfig } from '@playwright/test';
+export default defineConfig({ testDir: 'tests/e2e', timeout: 60000, use: { baseURL: 'http://127.0.0.1:3229', channel: process.env.HYPER_LEADER_TEST_BROWSER_CHANNEL, headless: true, viewport: { width: 1672, height: 941 }, screenshot: 'only-on-failure' }, webServer: { command: 'node scripts/e2e-server.mjs', url: 'http://127.0.0.1:3229/api/v1/health', reuseExistingServer: false, timeout: 120000 }, reporter: [['list'], ['json', { outputFile: '.local/verification/browser-tests.json' }], ['html', { open: 'never' }]] });

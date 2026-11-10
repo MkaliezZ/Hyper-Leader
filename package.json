@@ -1,0 +1,55 @@
+{
+  "name": "hyper-leader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Local-first boss workbench on the official DeepSeek Harness runtime and Hyper Protocol.",
+  "engines": { "node": ">=24.9.0" },
+  "scripts": {
+    "dev": "tsx server/index.ts --dev",
+    "setup": "node scripts/setup.mjs",
+    "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
+    "build": "tsc -p tsconfig.server.json && vite build",
+    "start": "node dist/server/index.js",
+    "test": "vitest run",
+    "test:public": "vitest run tests/store-network.test.ts tests/public-package.test.ts",
+    "test:e2e": "node scripts/browser-tests.mjs",
+    "setup:browser": "node scripts/browser-tests.mjs --install",
+    "test:runtime": "tsx scripts/runtime-smoke.ts",
+    "doctor": "tsx scripts/doctor.ts",
+    "check:public": "node scripts/check-public-repository.mjs"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-sdk-client": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.1",
+    "@fastify/multipart": "^9.2.0",
+    "cheerio": "^1.1.2",
+    "fastify": "^5.6.0",
+    "fflate": "^0.8.3",
+    "ipaddr.js": "^2.2.0",
+    "lucide-react": "0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.3",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.0"
+  },
+  "overrides": {
+    "zod": "$zod",
+    "undici": "^8.12.2",
+    "@modelcontextprotocol/client": "^2.3.0",
+    "fflate": "$fflate"
+  }
+}

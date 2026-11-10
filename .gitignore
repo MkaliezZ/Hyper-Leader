@@ -1,0 +1,35 @@
+# Public-code repository guardrails; private materials are not publication grants.
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.local/
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.key
+
+# Original inputs, local source snapshots and test evidence are not publication grants.
+30-业务资料库/00-原始材料与研究输入/原始包/
+30-业务资料库/00-原始材料与研究输入/来源快照/
+30-业务资料库/00-原始材料与研究输入/运行记录/
+*.local.json
+
+# The user authorized application code, not internal business documents or records.
+/AGENTS.md
+/00-根文件/
+/10-规则文件/
+/20-执行文件/
+/30-业务资料库/
+/90-版本复盘摘要/
+/00-Hyper-Leader业务文件体系总索引-*.md
+/scripts/create-implementation-handoff.mjs
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.log

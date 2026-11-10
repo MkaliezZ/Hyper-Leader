@@ -1,0 +1,21 @@
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import { createApp } from '../../server/app.js';
+import { publicFixture } from '../helpers.js';
+import { modelServer } from '../fixtures/model-server.js';
+const parent = path.join(os.tmpdir(), 'opencode'); await mkdir(parent, { recursive: true }); const home = await mkdtemp(path.join(parent, 'hyper-leader-browser-'));
+const fixture = await modelServer(body => {
+  if (!body.tools?.some((tool: any) => tool.name === 'leader_context')) return { text: '连接成功（本机模型协议夹具，非真实业务模型）' };
+  const last = body.messages?.at(-1);
+  if (!last?.content?.some?.((block: any) => block.type === 'tool_result')) return { tool: { name: 'leader_context', input: {} } };
+  const previous = [...(body.messages ?? [])].reverse().find((message: any) => message.role === 'assistant' && message.content?.some?.((block: any) => block.type === 'tool_use'));
+  if (previous?.content?.find((block: any) => block.type === 'tool_use')?.name === 'leader_context') return { tool: { name: 'leader_save_artifact', input: { title: '浏览器验收报告（合成）', content: '# 浏览器验收合成稿\n\n**建议：** 先核对证据和适用条件。\n\n**依据：** 本文由本机协议夹具产生，仅验证工具调用与实际保存，不是经营结论。\n\n**下一步：** 提供获准的真实材料并进行独立业务验收。', evidence_json: '[]' } } };
+  return { text: '**建议：** 先核对证据和适用条件。\n\n**依据：** 已实际保存浏览器验收合成稿；不是真实模型商业判断。\n\n**下一步：** 检查报告和版本。' };
+});
+const host = await createApp({ root: process.cwd(), home, reader: publicFixture, origin: 'http://127.0.0.1:3229', tracking: false });
+await host.config.save({ apiKey: 'sk-browser-fixture-not-real-000000000000', baseUrl: fixture.url, model: 'deepseek-flash', maxTokens: 2048, maxSteps: 10, maxMinutes: 3, searchProvider: 'none' });
+await host.app.listen({ host: '127.0.0.1', port: 3229 });
+let closed = false;
+const close = async () => { if (closed) return; closed = true; await host.app.close(); await fixture.close(); if (path.dirname(home) === parent && path.basename(home).startsWith('hyper-leader-browser-')) await rm(home, { recursive: true, force: true }); process.exit(0); };
+process.on('SIGTERM', () => { void close(); }); process.on('SIGINT', () => { void close(); });

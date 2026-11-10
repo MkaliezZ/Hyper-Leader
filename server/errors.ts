@@ -1,0 +1,3 @@
+export class AppError extends Error { constructor(readonly status: number, message: string, readonly code = 'REQUEST_FAILED', readonly detail?: unknown) { super(message); } }
+export function invariant(condition: unknown, status: number, message: string, code?: string): asserts condition { if (!condition) throw new AppError(status, message, code); }
+export function errorText(error: unknown, secret = '') { let message = error instanceof Error ? error.message : String(error); if (secret) message = message.split(secret).join('[已隐藏密钥]'); return message.replace(/(?:sk-[A-Za-z0-9_-]{16,}|Bearer\s+[A-Za-z0-9._-]{20,})/g, '[已隐藏凭据]').slice(0, 4000); }
